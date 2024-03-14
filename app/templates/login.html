@@ -1,0 +1,83 @@
+{% load static %}
+<html>
+<head>
+  <title>Chain Reaction | Login</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <style>
+        body{
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        h1{
+            font-family: 'Papyrus', sans-serif;
+            font-weight: bold;
+            font-size: 48px;
+            height: 100px;
+            width: 500px;
+            color: transparent;
+            background-clip: text;
+            -webkit-background-clip: text;
+        }
+        
+        h2{
+            font-family: Helvetica, sans-serif;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .form-container {
+            font-family: Helvetica, sans-serif;
+            width: 500px;
+            margin: auto;
+        }
+
+        .form-container label, .form-container input {
+            font-family: 'Trebuchet MS', sans-serif;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .form-container button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <a href="/Home" style="text-decoration: none;">
+    <h1>Chain Reaction</h1>
+    </a>
+    <div class="pc"><h2>Login</h2></div>  
+    <div class="pc">
+    <form method="post" class="form-container">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <br>
+      <div class="pc">
+      <button type="submit" class="button">Login</button>
+      </div>
+    </form>
+    </div>
+    <br><br>
+    <div class="pc">
+        ------------------------------OR------------------------------
+    </div><br><br>
+    <div class="pc">
+    <button type="button" class="button" onclick="window.location.href='/signup/'">Sign Up</button>
+    </div>
+</body>
+</html>

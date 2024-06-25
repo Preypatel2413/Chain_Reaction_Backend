@@ -25,12 +25,15 @@ SECRET_KEY = "django-insecure-xd5=_3elx1ov6wu_1ex@ay68i4rtwnd13*z8_g@juy9m!42%p!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://127.0.0.1', '127.0.0.1','http://localhost:3000']
+# ALLOWED_HOSTS = ['https://127.0.0.1', '127.0.0.1','http://localhost:3000']
+ALLOWED_HOSTS = ['127.0.0.1', '10.7.24.100','http://localhost:3000', "http://10.7.24.100:3000"]
 
-# CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000","https://localhost:3000",'https://127.0.0.1']
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOWED_ORIGINS = ["http://localhost:3000","https://localhost:3000",'https://127.0.0.1']
+# CORS_ALLOWED_ORIGINS = ['https://127.0.0.1', 'http://localhost:3000', "http://10.7.24.100:3000"]
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000","https://localhost:3000",]
+# CSRF_TRUSTED_ORIGINS = ["http://localhost:3000","https://localhost:3000",]
+CSRF_TRUSTED_ORIGINS = ["https://127.0.0.1", 'http://localhost:3000', "http://10.7.24.100:3000"]
 # Application definition
 
 
@@ -53,7 +56,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    # "django.middleware.csrf.CsrfViewMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -70,9 +73,9 @@ REST_FRAMEWORK = {
     ),
 }
 
-CSRF_COOKIE_DOMAIN = "http://127.0.0.1"
-SESSION_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_AGE = 1209600
+# CSRF_COOKIE_DOMAIN = "http://127.0.0.1"
+# SESSION_COOKIE_SAMESITE = 'None'
+# SESSION_COOKIE_AGE = 1209600
 
 # CSRF_COOKIE_SECURE = True  # Set this to True for HTTPS connections
 # CSRF_COOKIE_HTTPONLY = True

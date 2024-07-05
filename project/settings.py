@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+
+#daphne -b 0.0.0.0 -p 8000 project.asgi:application
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

@@ -122,6 +122,26 @@ def addFriend(request, name):
     else:
         return JsonResponse({"success": 0, "message": "User does not exist."})
 
+
+def clear_trace(request):
+    try:
+        user = find_User(request)
+        gm = RunningChallenge.objects.filter(Q(player1 = user) | Q(player2 = user))
+        gm.delete()
+        
+        gm2 = FriendlyChQueue.objects.filter(Q(p1 = user) | Q(p2 = user))
+        gm2.delete()
+        
+        gm3 = ChallengeQueue.objects.filter(user = user)
+        gm3.delete()
+
+        return JsonResponse({"success": 1, "message": "All traces cleared!!"})
+    except:
+        return JsonResponse({"success": 0, "message": "Try Again."})
+
+
+
+
 ###############################      GamePage(single player)      ###############################
 
 # @ensure_csrf_cookie
@@ -356,9 +376,27 @@ def Challenge(request):
             'name': friend_name,
         })
 
+    sent_challenges = set()
+    fr_ch = FriendlyChQueue.objects.filter(p1 = current_user).order_by('timestamp')
+    for fr in fr_ch:
+        fr_name = fr.p2.username
+        sent_challenges.add(fr_name)
+
+    send_state = []
+    for i in range(len(friends)):
+        if (friends[i]["name"] in sent_challenges):
+            send_state.append(False)
+        else:
+            send_state.append(True)
+
+    wt = ChallengeQueue.objects.filter(user = current_user)
+
+    waiting = True if(wt) else False
     context = {
+        'waiting' : waiting,
         'username': current_user.username,
         'friends': friends,
+        'sent_challenges': send_state,
         'received_challenges': friendly_challenge_queue,
     }
 
@@ -380,7 +418,8 @@ def createChallenge(request, name):
 def cancelChallenge(request, name):
     current_user = find_User(request)
     opponent = User.objects.get(username = name)
-    user_queue = FriendlyChQueue.objects.filter(Q(p1 = current_user) | Q(p2 = current_user)).order_by('timestamp')
+    user_queue = FriendlyChQueue.objects.filter(Q((Q(p1 = current_user) & Q(p2=opponent))|(Q(p1=opponent) & Q(p2 = current_user)))).order_by('timestamp')
+    print(user_queue)
     user_queue.delete()
     
     return JsonResponse({'success': 1})

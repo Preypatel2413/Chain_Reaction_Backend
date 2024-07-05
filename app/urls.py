@@ -9,7 +9,7 @@ urlpatterns = [
     path("sign_up/", views.signup, name= "signup"),
     path("login/", views.login, name= "login"),
     path("csrf_token/", views.get_csrf_token, name= "csrftoken"),
-    
+    path("clearTrace/", views.clear_trace, name = "clearTrace"),
     # path('Game/<str:room_code>/', views.Game, name='Game'),
     path('Challenge/',views.Challenge, name='Challenge'),
     path('acceptChallenge/<str:name>/', views.acceptChallenge, name='acceptChallenge'),

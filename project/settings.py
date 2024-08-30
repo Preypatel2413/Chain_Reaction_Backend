@@ -29,14 +29,14 @@ SECRET_KEY = "django-insecure-xd5=_3elx1ov6wu_1ex@ay68i4rtwnd13*z8_g@juy9m!42%p!
 DEBUG = True
 
 # ALLOWED_HOSTS = ['https://127.0.0.1', '127.0.0.1','http://localhost:3000']
-ALLOWED_HOSTS = ['127.0.0.1', '10.7.24.100','http://localhost:3000', "http://10.7.24.100:3000"]
+ALLOWED_HOSTS = ['127.0.0.1', "chain-reaction.preypatel.com", '194.195.119.89','http://localhost:3000', "http://194.195.119.89:3000"]
 
 CORS_ORIGIN_ALLOW_ALL = True
 # CORS_ALLOWED_ORIGINS = ["http://localhost:3000","https://localhost:3000",'https://127.0.0.1']
 # CORS_ALLOWED_ORIGINS = ['https://127.0.0.1', 'http://localhost:3000', "http://10.7.24.100:3000"]
 CORS_ALLOW_CREDENTIALS = True
 # CSRF_TRUSTED_ORIGINS = ["http://localhost:3000","https://localhost:3000",]
-CSRF_TRUSTED_ORIGINS = ["https://127.0.0.1", 'http://localhost:3000', "http://10.7.24.100:3000"]
+CSRF_TRUSTED_ORIGINS = ["https://127.0.0.1", "chain-reaction.preypatel.com", 'http://localhost:3000', "http://194.195.119.89:3000"]
 # Application definition
 
 

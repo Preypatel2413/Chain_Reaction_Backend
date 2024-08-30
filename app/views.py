@@ -28,6 +28,7 @@ import json
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 
+from .AI_Agent import *
 
 ###############################      ProfilePage      ###############################
 
@@ -54,7 +55,7 @@ def Profile(request):
     _, token = authorization_header.split()
     authentication = TokenAuthentication()
     user, _ = authentication.authenticate_credentials(token)
-    print(user)
+    # print(user)
     
     friends_as_user1 = Friends.objects.filter(user1=user)
     friends_as_user2 = Friends.objects.filter(user2=user)
@@ -86,29 +87,33 @@ def Profile(request):
             'games_played': games_played
         })
 
+    try:
+        wp = '%.2f' % (user.games_won * 100 / user.games_played)
+    except:
+        wp = '--'
     data = {
         'user': {
             'username': user.username,
             'games_won': user.games_won,
             'games_played': user.games_played,
-            'wp': '%.2f' % (user.games_won * 100 / user.games_played),
+            'wp': wp,
         },
         'friend_list': friends,
     }
 
-    print(data)
+    # print(data)
     return JsonResponse(data)
 
 def addFriend(request, name):
     user = find_User(request)
-    print(name)
+    # print(name)
 
     if(name == user.username):
         return JsonResponse({"success": 1, "message": "Hey! You are already your own friend."})
 
     try:
         friend = User.objects.get(username = name)
-        print(friend)
+        # print(friend)
     except:
         friend = []
 
@@ -148,17 +153,17 @@ def clear_trace(request):
 def GameState(request):
     
     session_id = request.session.session_key
-    print(request)
-    print(request.session)
-    print(request.session.session_key)
-    print(session_id)
+    # print(request)
+    # print(request.session)
+    # print(request.session.session_key)
+    # print(session_id)
 
     if(session_id in pos_dict.keys()):
         position_array = get_position(session_id)
     else:
         request.session.save()
         session_id = request.session.session_key
-        print(session_id)
+        # print(session_id)
         position_array = [[0]*6 for i in range(9)]
         set_position(session_id, position_array)
 
@@ -173,10 +178,9 @@ def GameState(request):
 # @ensure_csrf_cookie
 def update_position(request, row, col):
 
-    print("hii")
     # session_id = request.session.session_key
     session_id = request.headers['Content-Type']
-    print(session_id, row, col)
+    # print(session_id, row, col)
 
     position = pos_dict[session_id]
     move_num = num_move(session_id)
@@ -195,8 +199,13 @@ def update_position(request, row, col):
 
     data = {'Position': position_array, 
             'move': num_move(session_id),
-            'win': win(session_id)}
+            'win': win(session_id),
+            'lastmove': [row, col]}
     
+    if (data['win']):
+        position_array = [[0]*6 for i in range(9)]
+        set_position(session_id, position_array)
+
     return JsonResponse(data)
 
 columns = 6
@@ -279,7 +288,7 @@ def win(request):
 
 def get_csrf_token(request):
     csrf_token = get_token(request)
-    print(csrf_token)
+    # print(csrf_token)
     return JsonResponse({'csrfToken': csrf_token})
 
 @csrf_exempt
@@ -287,10 +296,10 @@ def signup(request):
     
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        print(request.body)
-        print(data)
+        # print(request.body)
+        # print(data)
         form = CustomUserCreationForm(data)
-        print(request.POST)
+        # print(request.POST)
         
 
         if form.is_valid():
@@ -311,7 +320,7 @@ def login(request):
 
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        print(data)
+        # print(data)
         username = data['username']
         password = data['password']
 
@@ -336,7 +345,7 @@ def login(request):
 def Challenge(request):
     current_user = find_User(request)
 
-    print(current_user.username)
+    # print(current_user.username)
     friends_as_user1 = Friends.objects.filter(user1=current_user)
     friends_as_user2 = Friends.objects.filter(user2=current_user)
 
@@ -400,7 +409,7 @@ def Challenge(request):
         'received_challenges': friendly_challenge_queue,
     }
 
-    print(context)
+    # print(context)
     return JsonResponse(context)
 
 
@@ -419,7 +428,7 @@ def cancelChallenge(request, name):
     current_user = find_User(request)
     opponent = User.objects.get(username = name)
     user_queue = FriendlyChQueue.objects.filter(Q((Q(p1 = current_user) & Q(p2=opponent))|(Q(p1=opponent) & Q(p2 = current_user)))).order_by('timestamp')
-    print(user_queue)
+    # print(user_queue)
     user_queue.delete()
     
     return JsonResponse({'success': 1})
@@ -457,7 +466,7 @@ def acceptChallenge(request, name):
         }
     )
 
-    print("redirecting Player 2")
+    # print("redirecting Player 2")
     return redirect('/Game/' + room_code + '/')
 
 
@@ -482,7 +491,7 @@ def randomChallenge(request):
             set_chat(opponent, cht)             ##
 
         # Send message to the other player's WebSocket
-        print(opponent.username, room_code)
+        # print(opponent.username, room_code)
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             'random_challenge',
@@ -504,8 +513,8 @@ def randomChallenge(request):
         #     'pairing': pairing
         # }
         response_data = {'pairing': True}
-        print(response_data)
-        print("response to player1")
+        # print(response_data)
+        # print("response to player1")
         return HttpResponse(json.dumps(response_data), content_type = 'application/json')
 
 
@@ -555,7 +564,7 @@ def GameState_GP(request):
         'conv': chat_diary[id],
     }
 
-    print(data)
+    # print(data)
     return JsonResponse(data)
 
 
@@ -596,23 +605,23 @@ def update_position_GP(request, room_code, row, col):
             'move': num_move(id),
             'win': win(id)}
     
-    print(data)
+    # print(data)
     return JsonResponse(data)
 
 
 def clearGame(request,win,p):
-    print(win, p)
+    # print(win, p)
     id = find_User(request)
     # id = request.user
     player = id.username
-    print("erased", win, p)
+    # print("erased", win, p)
 
     position = pos_dict[id]
     for i in range(rows):
         for j in range(columns):
             position[i][j] = 0
     
-    print(1)
+    # print(1)
     # del chat_diary[id]
     # print("2")
     user = get_object_or_404(User, username=player)
@@ -676,4 +685,38 @@ def send_Message(request, p, message):
             'message': 'conv_update',
             'conv': chat_diary[player],
         }
+    return JsonResponse(data)
+
+
+###############################      GamePage(VS AI Game)      ###############################
+
+def update_from_AI(request):
+
+    session_id = request.headers['Content-Type']
+
+    position = pos_dict[session_id]
+    move_num = num_move(session_id)
+
+    row, col = AI_agent_move(position)
+
+    if(move_num%2 == 0):
+        if(position[row][col]<0):
+            pass
+        add(row, col, 1, session_id)
+    else:
+        if(position[row][col]>0):
+            pass
+        add(row, col, -1, session_id)
+
+    position_array = get_position(session_id)
+
+    data = {'Position': position_array, 
+            'move': num_move(session_id),
+            'win': win(session_id),
+            'lastmove': [int(row), int(col)]}
+    
+    if (data['win']):
+        position_array = [[0]*6 for i in range(9)]
+        set_position(session_id, position_array)
+
     return JsonResponse(data)

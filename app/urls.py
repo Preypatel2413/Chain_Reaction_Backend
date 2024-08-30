@@ -21,4 +21,5 @@ urlpatterns = [
     path("update_position_GP/<str:room_code>/<int:row>/<int:col>/", views.update_position_GP, name="update_position"),
     path('clearGame/<int:win>/<int:p>/', views.clearGame, name='clearGame'),
     path('sendMessage/<int:p>/<str:message>/', views.send_Message, name='send_Message'),
+    path('ai_agent_move/', views.update_from_AI, name='update_from_ai'),
 ]
